@@ -17,7 +17,7 @@ describe('CourseCreator', () => {
 
     const expectedCourse = new Course({ id, name, duration });
 
-    await creator.run(id, name, duration);
+    await creator.run({ id, name, duration });
 
     repository.assertSaveHaveBeenCalledWith(expectedCourse);
   });

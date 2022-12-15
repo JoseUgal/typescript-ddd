@@ -1,13 +1,22 @@
 // Only Domain Imports
 import { Course } from '../domain/Course';
 import { CourseRepository } from '../domain/CourseRepository';
+import { CourseCreatorRequet } from './CourseCreatorRequest';
 
 export class CourseCreator {
-  constructor(private repository: CourseRepository) {}
+  private readonly _repository: CourseRepository;
 
-  async run(id: string, name: string, duration: string) {
-    const course = new Course({ id, name, duration });
+  constructor(repository: CourseRepository) {
+    this._repository = repository;
+  }
 
-    return this.repository.save(course);
+  async run(request: CourseCreatorRequet) {
+    const course = new Course({
+      id: request.id,
+      name: request.name,
+      duration: request.duration
+    });
+
+    return this._repository.save(course);
   }
 }
