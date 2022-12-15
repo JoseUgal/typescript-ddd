@@ -1,14 +1,11 @@
+// Only Domain Imports
 import { Course } from '../domain/Course';
 import { CourseRepository } from '../domain/CourseRepository';
 
 export class CourseCreator {
-  private repository: CourseRepository;
+  constructor(private repository: CourseRepository) {}
 
-  constructor(repository: CourseRepository) {
-    this.repository = repository;
-  }
-
-  async run(id: string, name: string, duration: string): Promise<void> {
+  async run(id: string, name: string, duration: string) {
     const course = new Course({ id, name, duration });
 
     return this.repository.save(course);
