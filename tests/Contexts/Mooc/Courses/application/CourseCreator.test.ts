@@ -1,10 +1,8 @@
 import { CourseCreator } from '../../../../../src/Contexts/Mooc/Courses/application/CourseCreator';
-import { Course } from '../../../../../src/Contexts/Mooc/Courses/domain/Course';
-import { CourseDuration } from '../../../../../src/Contexts/Mooc/Courses/domain/CourseDuration';
-import { CourseName } from '../../../../../src/Contexts/Mooc/Courses/domain/CourseName';
 import { CourseNameLengthExceeded } from '../../../../../src/Contexts/Mooc/Courses/domain/CourseNameLengthExceeded';
-import { CourseId } from '../../../../../src/Contexts/Mooc/Shared/domain/Courses/CourseId';
+import { CourseMother } from '../domain/CourseMother';
 import { CourseRepositoryMock } from '../__mocks__/CourseRepositoryMock';
+import { CreateCourseRequestMother } from './CreateCourseRequestMother';
 
 describe('CourseCreator', () => {
   let repository: CourseRepositoryMock;
@@ -15,37 +13,27 @@ describe('CourseCreator', () => {
 
   it('should create a valid course', async () => {
     const creator = new CourseCreator(repository);
-    const id = '187a4416-36bd-4d85-a5d8-66d157589125';
-    const name = 'some-name';
-    const duration = '5 hours';
 
-    const expectedCourse = new Course({
-      id: new CourseId(id),
-      name: new CourseName(name),
-      duration: new CourseDuration(duration)
-    });
+    const request = CreateCourseRequestMother.random();
 
-    await creator.run({ id, name, duration });
+    const course = CourseMother.fromRequest(request);
 
-    repository.assertSaveHaveBeenCalledWith(expectedCourse);
+    await creator.run(request);
+
+    repository.assertSaveHaveBeenCalledWith(course);
   });
 
   it('should throw error if course name length is exceeded', async () => {
     const creator = new CourseCreator(repository);
-    const id = 'addea31d-77af-45ad-9792-18b07b76917e';
-    const name = '*'.repeat(31);
-    const duration = 'some-duration';
+
+    const request = CreateCourseRequestMother.invalidRequest();
 
     expect(() => {
-      const expectedCourse = new Course({
-        id: new CourseId(id),
-        name: new CourseName(name),
-        duration: new CourseDuration(duration)
-      });
+      const course = CourseMother.fromRequest(request);
 
-      creator.run({ id, name, duration });
+      creator.run(request);
 
-      repository.assertSaveHaveBeenCalledWith(expectedCourse);
+      repository.assertSaveHaveBeenCalledWith(course);
     }).toThrow(CourseNameLengthExceeded);
   });
 });
