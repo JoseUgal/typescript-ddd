@@ -1,4 +1,5 @@
 // Only Domain Imports
+import { Uuid } from '../../../Shared/domain/value-object/Uuid';
 import { Course } from '../domain/Course';
 import { CourseRepository } from '../domain/CourseRepository';
 import { CourseCreatorRequet } from './CourseCreatorRequest';
@@ -12,7 +13,7 @@ export class CourseCreator {
 
   async run(request: CourseCreatorRequet) {
     const course = new Course({
-      id: request.id,
+      id: new Uuid(request.id),
       name: request.name,
       duration: request.duration
     });
