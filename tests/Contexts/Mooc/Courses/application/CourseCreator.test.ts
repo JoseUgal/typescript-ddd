@@ -1,13 +1,15 @@
 import { CourseCreator } from '../../../../../src/Contexts/Mooc/Courses/application/CourseCreator';
 import { Course } from '../../../../../src/Contexts/Mooc/Courses/domain/Course';
-import { CourseRepository } from '../../../../../src/Contexts/Mooc/Courses/domain/CourseRepository';
+import { CourseRepositoryMock } from '../__mocks__/CourseRepositoryMock';
 
 describe('CourseCreator', () => {
-  it('should create a valid course', async () => {
-    const repository: CourseRepository = {
-      save: jest.fn()
-    };
+  let repository: CourseRepositoryMock;
 
+  beforeEach(() => {
+    repository = new CourseRepositoryMock();
+  });
+
+  it('should create a valid course', async () => {
     const creator = new CourseCreator(repository);
     const id = 'id';
     const name = 'name';
@@ -17,6 +19,6 @@ describe('CourseCreator', () => {
 
     await creator.run(id, name, duration);
 
-    expect(repository.save).toHaveBeenCalledWith(expectedCourse);
+    repository.assertSaveHaveBeenCalledWith(expectedCourse);
   });
 });

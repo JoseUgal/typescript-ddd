@@ -1,18 +1,20 @@
-import { CourseRepository } from '../../../../../src/Contexts/Mooc/Courses/domain/CourseRepository';
 import { Course } from '../../../../../src/Contexts/Mooc/Courses/domain/Course';
+import { CourseRepository } from '../../../../../src/Contexts/Mooc/Courses/domain/CourseRepository';
 
 export class CourseRepositoryMock implements CourseRepository {
-  private mockSave = jest.fn();
+  private saveMock: jest.Mock;
 
+  constructor() {
+    this.saveMock = jest.fn();
+  }
+
+  // Registramos una llamada al metodo save con los parametros que
+  // hemos declarado
   async save(course: Course): Promise<void> {
-    this.mockSave(course);
+    this.saveMock(course);
   }
 
-  assertLastSavedCourseIs(expected: Course): void {
-    const mock = this.mockSave.mock;
-    const lastSavedCourse = mock.calls[mock.calls.length - 1][0] as Course;
-    expect(lastSavedCourse).toBeInstanceOf(Course);
-    expect(lastSavedCourse.id).toEqual(expected.id);
+  assertSaveHaveBeenCalledWith(expectedCourse: Course): void {
+    expect(this.saveMock).toHaveBeenCalledWith(expectedCourse);
   }
-
 }
