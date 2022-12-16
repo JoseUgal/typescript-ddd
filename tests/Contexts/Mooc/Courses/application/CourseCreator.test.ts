@@ -6,14 +6,14 @@ import { CreateCourseRequestMother } from './CreateCourseRequestMother';
 
 describe('CourseCreator', () => {
   let repository: CourseRepositoryMock;
+  let creator: CourseCreator;
 
   beforeEach(() => {
     repository = new CourseRepositoryMock();
+    creator = new CourseCreator(repository);
   });
 
   it('should create a valid course', async () => {
-    const creator = new CourseCreator(repository);
-
     const request = CreateCourseRequestMother.random();
 
     const course = CourseMother.fromRequest(request);
@@ -24,11 +24,8 @@ describe('CourseCreator', () => {
   });
 
   it('should throw error if course name length is exceeded', async () => {
-    const creator = new CourseCreator(repository);
-
-    const request = CreateCourseRequestMother.invalidRequest();
-
     expect(() => {
+      const request = CreateCourseRequestMother.invalidRequest();
       const course = CourseMother.fromRequest(request);
 
       creator.run(request);
